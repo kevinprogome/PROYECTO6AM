@@ -1,0 +1,164 @@
+{
+  "_meta": {
+    "name": "GreenHouse Manager i18n EN",
+    "description": "English messages for the UI.",
+    "author": "GreenHouse Manager Team",
+    "date": "2026-05-02",
+    "version": "1.0.0"
+  },
+  "app": {
+    "name": "GreenHouse Manager",
+    "tagline": "Smart greenhouse operations"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "greenhouses": "Greenhouses",
+    "plants": "Plants",
+    "alerts": "Alerts",
+    "reports": "Reports",
+    "login": "Login",
+    "logout": "Logout",
+    "language": "Language"
+  },
+  "common": {
+    "create": "Create",
+    "update": "Update",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "edit": "Edit",
+    "actions": "Actions",
+    "loading": "Loading...",
+    "search": "Search",
+    "filter": "Filter",
+    "apply": "Apply",
+    "reset": "Reset",
+    "active": "Active",
+    "inactive": "Inactive",
+    "confirmDelete": "Confirm deletion?",
+    "errorLoad": "Could not load data.",
+    "notAvailable": "Not available"
+  },
+  "table": {
+    "noData": "No data",
+    "page": "Page",
+    "of": "of",
+    "prev": "Previous",
+    "next": "Next"
+  },
+  "login": {
+    "title": "Access",
+    "subtitle": "Sign in with Google to continue.",
+    "googleButton": "Login with Google",
+    "tokenHint": "Paste your token if you are coming from login",
+    "tokenPlaceholder": "JWT token",
+    "tokenButton": "Save token"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "totalPlants": "Total plants",
+    "activeAlerts": "Active alerts",
+    "upcomingIrrigation": "Upcoming irrigations",
+    "irrigationTrend": "Irrigation trend",
+    "fertilizationTrend": "Fertilization trend",
+    "chart": {
+      "w1": "Week 1",
+      "w2": "Week 2",
+      "w3": "Week 3",
+      "w4": "Week 4",
+      "irrigation": "Irrigations",
+      "fertilization": "Fertilizations"
+    }
+  },
+  "greenhouses": {
+    "title": "Greenhouses",
+    "create": "Create greenhouse",
+    "edit": "Edit greenhouse",
+    "form": {
+      "ownerId": "User ID",
+      "name": "Name",
+      "location": "Location",
+      "description": "Description",
+      "area": "Area (m2)"
+    },
+    "table": {
+      "ownerId": "User",
+      "name": "Name",
+      "location": "Location",
+      "area": "Area",
+      "actions": "Actions"
+    }
+  },
+  "plants": {
+    "title": "Plants",
+    "create": "Create plant",
+    "edit": "Edit plant",
+    "filterStatus": "Status",
+    "filterGreenhouse": "Greenhouse ID",
+    "registerIrrigation": "Register irrigation",
+    "registerFertilization": "Register fertilization",
+    "promptFertilizerType": "Fertilizer type",
+    "form": {
+      "greenhouseId": "Greenhouse ID",
+      "commonName": "Common name",
+      "scientificName": "Scientific name",
+      "variety": "Variety",
+      "sowDate": "Sowing date",
+      "lastIrrigation": "Last irrigation",
+      "irrigationFreq": "Irrigation frequency (days)",
+      "lastFertilization": "Last fertilization",
+      "fertilizationFreq": "Fertilization frequency (days)",
+      "status": "Status",
+      "notes": "Notes",
+      "active": "Active"
+    },
+    "table": {
+      "commonName": "Common name",
+      "status": "Status",
+      "greenhouse": "Greenhouse",
+      "lastIrrigation": "Last irrigation",
+      "lastFertilization": "Last fertilization",
+      "actions": "Actions"
+    }
+  },
+  "alerts": {
+    "title": "Alerts",
+    "resolve": "Resolve",
+    "table": {
+      "type": "Type",
+      "severity": "Severity",
+      "message": "Message",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "reports": {
+    "title": "Reports",
+    "irrigationHistory": "Irrigation history",
+    "fertilizationHistory": "Fertilization history",
+    "irrigation": {
+      "date": "Date",
+      "volume": "Volume",
+      "method": "Method",
+      "operator": "Operator"
+    },
+    "fertilization": {
+      "date": "Date",
+      "type": "Type",
+      "dose": "Dose",
+      "unit": "Unit",
+      "operator": "Operator"
+    }
+  },
+  "status": {
+    "optimo": "Optimal",
+    "vigilancia": "Watch",
+    "critico": "Critical"
+  },
+  "severity": {
+    "baja": "Low",
+    "media": "Medium",
+    "alta": "High"
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "_meta": {
+    "name": "GreenHouse Manager i18n ES",
+    "description": "Mensajes en espanol para la interfaz.",
+    "author": "Equipo GreenHouse Manager",
+    "date": "2026-05-02",
+    "version": "1.0.0"
+  },
+  "app": {
+    "name": "GreenHouse Manager",
+    "tagline": "Gestion inteligente de invernaderos"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "greenhouses": "Invernaderos",
+    "plants": "Plantas",
+    "alerts": "Alertas",
+    "reports": "Reportes",
+    "login": "Ingresar",
+    "logout": "Salir",
+    "language": "Idioma"
+  },
+  "common": {
+    "create": "Crear",
+    "update": "Actualizar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "edit": "Editar",
+    "actions": "Acciones",
+    "loading": "Cargando...",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "apply": "Aplicar",
+    "reset": "Restablecer",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "confirmDelete": "Confirmar eliminacion?",
+    "errorLoad": "No se pudieron cargar los datos.",
+    "notAvailable": "No disponible"
+  },
+  "table": {
+    "noData": "Sin datos",
+    "page": "Pagina",
+    "of": "de",
+    "prev": "Anterior",
+    "next": "Siguiente"
+  },
+  "login": {
+    "title": "Acceso",
+    "subtitle": "Inicia sesion con Google para continuar.",
+    "googleButton": "Login con Google",
+    "tokenHint": "Pega tu token si vienes del login",
+    "tokenPlaceholder": "Token JWT",
+    "tokenButton": "Guardar token"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "totalPlants": "Total plantas",
+    "activeAlerts": "Alertas activas",
+    "upcomingIrrigation": "Proximos riegos",
+    "irrigationTrend": "Tendencia de riegos",
+    "fertilizationTrend": "Tendencia de fertilizacion",
+    "chart": {
+      "w1": "Semana 1",
+      "w2": "Semana 2",
+      "w3": "Semana 3",
+      "w4": "Semana 4",
+      "irrigation": "Riegos",
+      "fertilization": "Fertilizaciones"
+    }
+  },
+  "greenhouses": {
+    "title": "Invernaderos",
+    "create": "Crear invernadero",
+    "edit": "Editar invernadero",
+    "form": {
+      "ownerId": "Usuario ID",
+      "name": "Nombre",
+      "location": "Ubicacion",
+      "description": "Descripcion",
+      "area": "Area (m2)"
+    },
+    "table": {
+      "ownerId": "Usuario",
+      "name": "Nombre",
+      "location": "Ubicacion",
+      "area": "Area",
+      "actions": "Acciones"
+    }
+  },
+  "plants": {
+    "title": "Plantas",
+    "create": "Crear planta",
+    "edit": "Editar planta",
+    "filterStatus": "Estado",
+    "filterGreenhouse": "Invernadero ID",
+    "registerIrrigation": "Registrar riego",
+    "registerFertilization": "Registrar fertilizacion",
+    "promptFertilizerType": "Tipo de fertilizante",
+    "form": {
+      "greenhouseId": "Invernadero ID",
+      "commonName": "Nombre comun",
+      "scientificName": "Nombre cientifico",
+      "variety": "Variedad",
+      "sowDate": "Fecha siembra",
+      "lastIrrigation": "Ultimo riego",
+      "irrigationFreq": "Frecuencia riego (dias)",
+      "lastFertilization": "Ultima fertilizacion",
+      "fertilizationFreq": "Frecuencia fertilizacion (dias)",
+      "status": "Estado",
+      "notes": "Notas",
+      "active": "Activo"
+    },
+    "table": {
+      "commonName": "Nombre comun",
+      "status": "Estado",
+      "greenhouse": "Invernadero",
+      "lastIrrigation": "Ultimo riego",
+      "lastFertilization": "Ultima fertilizacion",
+      "actions": "Acciones"
+    }
+  },
+  "alerts": {
+    "title": "Alertas",
+    "resolve": "Resolver",
+    "table": {
+      "type": "Tipo",
+      "severity": "Severidad",
+      "message": "Mensaje",
+      "status": "Estado",
+      "actions": "Acciones"
+    }
+  },
+  "reports": {
+    "title": "Reportes",
+    "irrigationHistory": "Historico de riegos",
+    "fertilizationHistory": "Historico de fertilizacion",
+    "irrigation": {
+      "date": "Fecha",
+      "volume": "Volumen",
+      "method": "Metodo",
+      "operator": "Responsable"
+    },
+    "fertilization": {
+      "date": "Fecha",
+      "type": "Tipo",
+      "dose": "Dosis",
+      "unit": "Unidad",
+      "operator": "Responsable"
+    }
+  },
+  "status": {
+    "optimo": "Optimo",
+    "vigilancia": "Vigilancia",
+    "critico": "Critico"
+  },
+  "severity": {
+    "baja": "Baja",
+    "media": "Media",
+    "alta": "Alta"
+  }
+}
