@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import DataTable from "../components/DataTable.jsx";
 import Modal from "../components/Modal.jsx";
+import { useAuth } from "../hooks/useAuth.js";
 import { invernaderoService } from "../services/invernaderoService.js";
 
 const emptyForm = {
@@ -27,9 +28,13 @@ const emptyForm = {
  */
 export default function InvernaderosPage() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const isAdmin = user?.role === "ADMIN";
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [saveError, setSaveError] = useState("");
+  const [formErrors, setFormErrors] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(emptyForm);
@@ -59,7 +64,8 @@ export default function InvernaderosPage() {
    */
   const handleCreate = () => {
     setEditingId(null);
-    setForm(emptyForm);
+    setForm({ ...emptyForm, usuarioId: user?.id || "" });
+    setFormErrors({});
     setModalOpen(true);
   };
 
@@ -77,6 +83,7 @@ export default function InvernaderosPage() {
       descripcion: row.descripcion || "",
       areaM2: row.areaM2 || ""
     });
+    setFormErrors({});
     setModalOpen(true);
   };
 
@@ -88,28 +95,54 @@ export default function InvernaderosPage() {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
+    setFormErrors((current) => ({ ...current, [name]: "" }));
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    const resolvedUserId = form.usuarioId || user?.id;
+    if (!resolvedUserId) {
+      errors.usuarioId = t("greenhouses.validation.ownerRequired");
+    }
+    if (!form.nombre || !form.nombre.trim()) {
+      errors.nombre = t("greenhouses.validation.nameRequired");
+    }
+    if (!form.ubicacion || !form.ubicacion.trim()) {
+      errors.ubicacion = t("greenhouses.validation.locationRequired");
+    }
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   /**
    * Saves the greenhouse changes.
    */
   const handleSave = async () => {
+    setSaveError("");
+    const resolvedUserId = form.usuarioId || user?.id;
+    if (!validateForm()) {
+      setSaveError(t("common.requiredFields"));
+      return;
+    }
     const payload = {
-      usuarioId: Number(form.usuarioId),
-      nombre: form.nombre,
-      ubicacion: form.ubicacion,
+      usuarioId: Number(resolvedUserId),
+      nombre: form.nombre.trim(),
+      ubicacion: form.ubicacion.trim(),
       descripcion: form.descripcion || null,
       areaM2: form.areaM2 ? Number(form.areaM2) : null
     };
-
-    if (editingId) {
-      await invernaderoService.update(editingId, payload);
-    } else {
-      await invernaderoService.create(payload);
+    try {
+      if (editingId) {
+        await invernaderoService.update(editingId, payload);
+      } else {
+        await invernaderoService.create(payload);
+      }
+      setModalOpen(false);
+      fetchData();
+    } catch (saveErrorResponse) {
+      const apiMessage = saveErrorResponse?.response?.data?.message;
+      setSaveError(apiMessage || t("common.saveError"));
     }
-
-    setModalOpen(false);
-    fetchData();
   };
 
   /**
@@ -121,8 +154,13 @@ export default function InvernaderosPage() {
     if (!window.confirm(t("common.confirmDelete"))) {
       return;
     }
-    await invernaderoService.delete(row.id);
-    fetchData();
+    try {
+      await invernaderoService.delete(row.id);
+      fetchData();
+    } catch (deleteErrorResponse) {
+      const apiMessage = deleteErrorResponse?.response?.data?.message;
+      setSaveError(apiMessage || t("common.saveError"));
+    }
   };
 
   /**
@@ -161,12 +199,13 @@ export default function InvernaderosPage() {
           {t("greenhouses.create")}
         </button>
       </div>
+      {saveError ? <div className="notice notice-error">{saveError}</div> : null}
       {loading ? (
         <p className="muted">{t("common.loading")}</p>
       ) : error ? (
         <p className="muted">{error}</p>
       ) : (
-        <DataTable columns={columns} rows={items} />
+        <DataTable columns={columns} rows={items} emptyMessage={t("greenhouses.empty")} />
       )}
       <Modal
         isOpen={modalOpen}
@@ -175,41 +214,91 @@ export default function InvernaderosPage() {
         onSubmit={handleSave}
       >
         <div className="form-grid">
-          <input
-            className="input"
-            name="usuarioId"
-            value={form.usuarioId}
-            onChange={handleChange}
-            placeholder={t("greenhouses.form.ownerId")}
-          />
-          <input
-            className="input"
-            name="nombre"
-            value={form.nombre}
-            onChange={handleChange}
-            placeholder={t("greenhouses.form.name")}
-          />
-          <input
-            className="input"
-            name="ubicacion"
-            value={form.ubicacion}
-            onChange={handleChange}
-            placeholder={t("greenhouses.form.location")}
-          />
-          <input
-            className="input"
-            name="areaM2"
-            value={form.areaM2}
-            onChange={handleChange}
-            placeholder={t("greenhouses.form.area")}
-          />
-          <input
-            className="input"
-            name="descripcion"
-            value={form.descripcion}
-            onChange={handleChange}
-            placeholder={t("greenhouses.form.description")}
-          />
+          {isAdmin ? (
+            <div className="field">
+              <label className="field-label">
+                {t("greenhouses.form.ownerId")} <span className="required">*</span>
+              </label>
+              <input
+                className="input"
+                name="usuarioId"
+                value={form.usuarioId}
+                onChange={handleChange}
+                placeholder={t("greenhouses.form.ownerId")}
+              />
+              <p className="field-hint">{t("greenhouses.form.ownerHint")}</p>
+              {formErrors.usuarioId ? (
+                <p className="field-error">{formErrors.usuarioId}</p>
+              ) : null}
+            </div>
+          ) : (
+            <div className="field">
+              <label className="field-label">{t("greenhouses.form.ownerLabel")}</label>
+              <input
+                className="input"
+                value={user?.email || t("greenhouses.form.ownerFallback")}
+                readOnly
+              />
+              <p className="field-hint">{t("greenhouses.form.ownerHint")}</p>
+            </div>
+          )}
+          <div className="field">
+            <label className="field-label">
+              {t("greenhouses.form.name")} <span className="required">*</span>
+            </label>
+            <input
+              className="input"
+              name="nombre"
+              value={form.nombre}
+              onChange={handleChange}
+              placeholder={t("greenhouses.form.name")}
+            />
+            <p className="field-hint">{t("greenhouses.form.nameHint")}</p>
+            {formErrors.nombre ? (
+              <p className="field-error">{formErrors.nombre}</p>
+            ) : null}
+          </div>
+          <div className="field">
+            <label className="field-label">
+              {t("greenhouses.form.location")} <span className="required">*</span>
+            </label>
+            <input
+              className="input"
+              name="ubicacion"
+              value={form.ubicacion}
+              onChange={handleChange}
+              placeholder={t("greenhouses.form.location")}
+            />
+            <p className="field-hint">{t("greenhouses.form.locationHint")}</p>
+            {formErrors.ubicacion ? (
+              <p className="field-error">{formErrors.ubicacion}</p>
+            ) : null}
+          </div>
+          <div className="field">
+            <label className="field-label">{t("greenhouses.form.area")}</label>
+            <input
+              className="input"
+              type="number"
+              min="0"
+              step="0.01"
+              name="areaM2"
+              value={form.areaM2}
+              onChange={handleChange}
+              placeholder={t("greenhouses.form.area")}
+            />
+            <p className="field-hint">{t("greenhouses.form.areaHint")}</p>
+          </div>
+          <div className="field" style={{ gridColumn: "1 / -1" }}>
+            <label className="field-label">{t("greenhouses.form.description")}</label>
+            <textarea
+              className="textarea"
+              name="descripcion"
+              value={form.descripcion}
+              onChange={handleChange}
+              placeholder={t("greenhouses.form.description")}
+            />
+            <p className="field-hint">{t("greenhouses.form.descriptionHint")}</p>
+          </div>
         </div>
       </Modal>
     </div>

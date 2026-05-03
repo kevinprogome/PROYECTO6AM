@@ -17,7 +17,7 @@ import { useAuth } from "../hooks/useAuth.js";
  */
 export default function Navbar() {
   const { t, i18n } = useTranslation();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
 
   /**
    * Handles language changes.
@@ -65,6 +65,12 @@ export default function Navbar() {
         </nav>
       ) : null}
       <div className="nav-actions">
+        {isAuthenticated && user ? (
+          <div className="nav-user">
+            <span className="nav-user-name">{user.email}</span>
+            <span className="role-pill">{user.role}</span>
+          </div>
+        ) : null}
         <select
           className="select"
           value={i18n.language}

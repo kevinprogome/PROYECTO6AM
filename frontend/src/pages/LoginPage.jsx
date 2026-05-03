@@ -6,8 +6,9 @@
  * Fecha: 2026-05-02
  * Version: 1.0.0
  */
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
 import { getGoogleLoginUrl } from "../services/authService.js";
 
@@ -18,8 +19,8 @@ import { getGoogleLoginUrl } from "../services/authService.js";
  */
 export default function LoginPage() {
   const { t } = useTranslation();
-  const { login } = useAuth();
-  const [tokenInput, setTokenInput] = useState("");
+  const { login, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   /**
    * Detects token in query params and stores it.
@@ -28,11 +29,19 @@ export default function LoginPage() {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
     if (token) {
+      const userId = params.get("userId");
       const email = params.get("email") || "user@local";
       const role = params.get("role") || "OPERADOR";
-      login({ token, user: { email, role } });
+      login({ token, user: { id: userId ? Number(userId) : null, email, role } });
+      navigate("/", { replace: true });
     }
-  }, [login]);
+  }, [login, navigate]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   /**
    * Handles redirect to Google login.
@@ -41,28 +50,6 @@ export default function LoginPage() {
     window.location.href = getGoogleLoginUrl();
   };
 
-  /**
-   * Handles manual token input changes.
-   *
-   * @param {import("react").ChangeEvent<HTMLInputElement>} event input event
-   */
-  const handleTokenChange = (event) => {
-    setTokenInput(event.target.value);
-  };
-
-  /**
-   * Handles manual token submission.
-   *
-   * @param {import("react").FormEvent<HTMLFormElement>} event form event
-   */
-  const handleTokenSubmit = (event) => {
-    event.preventDefault();
-    if (!tokenInput) {
-      return;
-    }
-    login({ token: tokenInput, user: { email: "manual@local", role: "OPERADOR" } });
-    setTokenInput("");
-  };
 
   return (
     <div className="card">
@@ -73,22 +60,6 @@ export default function LoginPage() {
       <button className="btn btn-primary" type="button" onClick={handleGoogleLogin}>
         {t("login.googleButton")}
       </button>
-      <hr />
-      <p className="muted">{t("login.tokenHint")}</p>
-      <form onSubmit={handleTokenSubmit}>
-        <input
-          className="input"
-          name="token"
-          value={tokenInput}
-          onChange={handleTokenChange}
-          placeholder={t("login.tokenPlaceholder")}
-        />
-        <div className="modal-actions">
-          <button className="btn btn-outline" type="submit">
-            {t("login.tokenButton")}
-          </button>
-        </div>
-      </form>
     </div>
   );
 }

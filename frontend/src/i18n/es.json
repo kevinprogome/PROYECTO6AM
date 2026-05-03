@@ -38,7 +38,10 @@
     "inactive": "Inactivo",
     "confirmDelete": "Confirmar eliminacion?",
     "errorLoad": "No se pudieron cargar los datos.",
-    "notAvailable": "No disponible"
+    "saveError": "No se pudo guardar la informacion.",
+    "requiredFields": "Completa los campos obligatorios.",
+    "notAvailable": "No disponible",
+    "selectOption": "Selecciona una opcion"
   },
   "table": {
     "noData": "Sin datos",
@@ -57,9 +60,19 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "overview": "Resumen operativo",
     "totalPlants": "Total plantas",
     "activeAlerts": "Alertas activas",
-    "upcomingIrrigation": "Proximos riegos",
+    "needsIrrigation": "Necesitan riego",
+    "needsFertilization": "Necesitan fertilizacion",
+    "criticalPlants": "Plantas criticas",
+    "allGreenhouses": "Todos los invernaderos",
+    "activeGreenhouse": "Invernadero activo",
+    "weeklyActivity": "Actividad semanal",
+    "attentionList": "Plantas con atencion pendiente",
+    "attentionHint": "Riego o fertilizacion urgente",
+    "noAttention": "No hay plantas pendientes.",
+    "noActivity": "No hay registros recientes.",
     "irrigationTrend": "Tendencia de riegos",
     "fertilizationTrend": "Tendencia de fertilizacion",
     "chart": {
@@ -75,12 +88,25 @@
     "title": "Invernaderos",
     "create": "Crear invernadero",
     "edit": "Editar invernadero",
+    "empty": "No hay invernaderos registrados.",
+    "validation": {
+      "ownerRequired": "Selecciona el usuario responsable.",
+      "nameRequired": "Ingresa el nombre del invernadero.",
+      "locationRequired": "Ingresa la ubicacion del invernadero."
+    },
     "form": {
       "ownerId": "Usuario ID",
+      "ownerLabel": "Responsable",
+      "ownerHint": "Se usa el usuario autenticado.",
+      "ownerFallback": "Usuario actual",
       "name": "Nombre",
       "location": "Ubicacion",
       "description": "Descripcion",
-      "area": "Area (m2)"
+      "area": "Area (m2)",
+      "nameHint": "Ej: Invernadero Norte",
+      "locationHint": "Ej: Lote 2 - Campo central",
+      "areaHint": "Metros cuadrados, solo numero",
+      "descriptionHint": "Notas operativas o cultivos principales"
     },
     "table": {
       "ownerId": "Usuario",
@@ -94,13 +120,44 @@
     "title": "Plantas",
     "create": "Crear planta",
     "edit": "Editar planta",
+    "search": "Buscar por nombre o variedad",
+    "empty": "No hay plantas registradas.",
+    "noGreenhouses": "Primero crea un invernadero para registrar plantas.",
     "filterStatus": "Estado",
-    "filterGreenhouse": "Invernadero ID",
+    "filterGreenhouse": "Invernadero",
     "registerIrrigation": "Registrar riego",
     "registerFertilization": "Registrar fertilizacion",
     "promptFertilizerType": "Tipo de fertilizante",
+    "sections": {
+      "basic": "Datos principales",
+      "schedule": "Plan de riego y fertilizacion",
+      "status": "Estado y disponibilidad",
+      "notes": "Notas"
+    },
+    "validation": {
+      "greenhouseRequired": "Selecciona el invernadero.",
+      "nameRequired": "Ingresa el nombre comun.",
+      "irrigationFreqRequired": "Define la frecuencia de riego.",
+      "fertilizationFreqRequired": "Define la frecuencia de fertilizacion.",
+      "actionDateRequired": "Selecciona la fecha y hora.",
+      "fertilizerRequired": "Ingresa el tipo de fertilizante."
+    },
+    "actions": {
+      "irrigationTitle": "Registrar riego - {{name}}",
+      "fertilizationTitle": "Registrar fertilizacion - {{name}}",
+      "irrigationSubmit": "Guardar riego",
+      "fertilizationSubmit": "Guardar fertilizacion",
+      "actionDate": "Fecha y hora",
+      "volume": "Volumen (L)",
+      "method": "Metodo",
+      "responsable": "Responsable",
+      "notes": "Notas",
+      "fertilizerType": "Tipo de fertilizante",
+      "dose": "Dosis",
+      "unit": "Unidad"
+    },
     "form": {
-      "greenhouseId": "Invernadero ID",
+      "greenhouseId": "Invernadero",
       "commonName": "Nombre comun",
       "scientificName": "Nombre cientifico",
       "variety": "Variedad",
@@ -111,7 +168,19 @@
       "fertilizationFreq": "Frecuencia fertilizacion (dias)",
       "status": "Estado",
       "notes": "Notas",
-      "active": "Activo"
+      "active": "Activo",
+      "greenhouseHint": "Selecciona el invernadero donde se encuentra.",
+      "commonNameHint": "Ej: Tomate cherry",
+      "scientificNameHint": "Ej: Solanum lycopersicum",
+      "varietyHint": "Ej: Santa Clara",
+      "sowDateHint": "Fecha de siembra o trasplante.",
+      "lastIrrigationHint": "Ultimo riego registrado.",
+      "irrigationFreqHint": "Cada cuantos dias se riega.",
+      "lastFertilizationHint": "Ultima fertilizacion registrada.",
+      "fertilizationFreqHint": "Cada cuantos dias se fertiliza.",
+      "statusHint": "Estado actual del cultivo.",
+      "activeHint": "Marca inactivo si la planta ya no esta en produccion.",
+      "notesHint": "Observaciones para el operador."
     },
     "table": {
       "commonName": "Nombre comun",
@@ -125,11 +194,21 @@
   "alerts": {
     "title": "Alertas",
     "resolve": "Resolver",
+    "filterStatus": "Estado",
+    "filterSeverity": "Severidad",
+    "empty": "No hay alertas para mostrar.",
+    "types": {
+      "RIEGO": "Riego",
+      "FERTILIZACION": "Fertilizacion",
+      "ESTADO": "Estado",
+      "GENERAL": "General"
+    },
     "table": {
       "type": "Tipo",
       "severity": "Severidad",
       "message": "Mensaje",
       "status": "Estado",
+      "created": "Generada",
       "actions": "Acciones"
     }
   },
@@ -137,6 +216,9 @@
     "title": "Reportes",
     "irrigationHistory": "Historico de riegos",
     "fertilizationHistory": "Historico de fertilizacion",
+    "plant": "Planta",
+    "emptyIrrigation": "No hay registros de riego.",
+    "emptyFertilization": "No hay registros de fertilizacion.",
     "irrigation": {
       "date": "Fecha",
       "volume": "Volumen",
@@ -160,5 +242,17 @@
     "baja": "Baja",
     "media": "Media",
     "alta": "Alta"
+  },
+  "alerta": {
+    "riego": {
+      "pendiente": "La planta requiere riego."
+    },
+    "fertilizacion": {
+      "pendiente": "La planta requiere fertilizacion."
+    },
+    "estado": {
+      "critico": "El estado del cultivo es critico.",
+      "vigilancia": "El estado del cultivo requiere vigilancia."
+    }
   }
 }

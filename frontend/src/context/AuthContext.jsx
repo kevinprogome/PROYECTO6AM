@@ -13,6 +13,7 @@ const USER_KEY = "ghm_user";
 
 /**
  * @typedef {Object} AuthUser
+ * @property {number|null} id User id
  * @property {string} email User email
  * @property {string} role User role
  */

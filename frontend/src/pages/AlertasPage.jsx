@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import AlertBadge from "../components/AlertBadge.jsx";
 import DataTable from "../components/DataTable.jsx";
+import { useAuth } from "../hooks/useAuth.js";
 import { alertaService } from "../services/alertaService.js";
 
 /**
@@ -18,7 +19,10 @@ import { alertaService } from "../services/alertaService.js";
  * @param {Date} date date instance
  * @returns {string} local datetime
  */
-const toLocalDateTime = (date) => date.toISOString().slice(0, 19);
+const toLocalDateTime = (date) => {
+  const offsetMs = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 19);
+};
 
 /**
  * Renders the alerts page.
@@ -27,9 +31,16 @@ const toLocalDateTime = (date) => date.toISOString().slice(0, 19);
  */
 export default function AlertasPage() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [saveError, setSaveError] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [severityFilter, setSeverityFilter] = useState("");
+
+  const formatDateTime = (value) =>
+    value ? new Date(value).toLocaleString() : t("common.notAvailable");
 
   /**
    * Loads alerts data.
@@ -57,18 +68,24 @@ export default function AlertasPage() {
    * @param {Object} row alert row
    */
   const handleResolve = async (row) => {
-    await alertaService.update(row.id, {
-      plantaId: row.plantaId,
-      invernaderoId: row.invernaderoId,
-      tipo: row.tipo,
-      severidad: row.severidad,
-      mensaje: row.mensaje,
-      activa: false,
-      fechaGeneracion: row.fechaGeneracion,
-      fechaResolucion: toLocalDateTime(new Date()),
-      resueltaPorUsuarioId: row.resueltaPorUsuarioId || null
-    });
-    fetchData();
+    setSaveError("");
+    try {
+      await alertaService.update(row.id, {
+        plantaId: row.plantaId,
+        invernaderoId: row.invernaderoId,
+        tipo: row.tipo,
+        severidad: row.severidad,
+        mensaje: row.mensaje,
+        activa: false,
+        fechaGeneracion: row.fechaGeneracion,
+        fechaResolucion: toLocalDateTime(new Date()),
+        resueltaPorUsuarioId: user?.id || row.resueltaPorUsuarioId || null
+      });
+      fetchData();
+    } catch (saveErrorResponse) {
+      const apiMessage = saveErrorResponse?.response?.data?.message;
+      setSaveError(apiMessage || t("common.saveError"));
+    }
   };
 
   /**
@@ -79,25 +96,55 @@ export default function AlertasPage() {
    */
   const renderActions = (row) => (
     <div className="table-actions">
-      <button className="btn btn-outline" type="button" onClick={() => handleResolve(row)}>
+      <button
+        className="btn btn-outline"
+        type="button"
+        onClick={() => handleResolve(row)}
+        disabled={!row.activa}
+      >
         {t("alerts.resolve")}
       </button>
     </div>
   );
 
+  const filteredItems = useMemo(() => {
+    return items.filter((item) => {
+      const statusOk = statusFilter === ""
+        ? true
+        : statusFilter === "active"
+          ? item.activa
+          : !item.activa;
+      const severityOk = severityFilter ? item.severidad === severityFilter : true;
+      return statusOk && severityOk;
+    });
+  }, [items, statusFilter, severityFilter]);
+
   const columns = useMemo(
     () => [
-      { key: "tipo", header: t("alerts.table.type") },
+      {
+        key: "tipo",
+        header: t("alerts.table.type"),
+        render: (row) => t(`alerts.types.${row.tipo}`, { defaultValue: row.tipo })
+      },
       {
         key: "severidad",
         header: t("alerts.table.severity"),
         render: (row) => <AlertBadge severity={row.severidad} />
       },
-      { key: "mensaje", header: t("alerts.table.message") },
+      {
+        key: "mensaje",
+        header: t("alerts.table.message"),
+        render: (row) => t(row.mensaje, { defaultValue: row.mensaje })
+      },
       {
         key: "activa",
         header: t("alerts.table.status"),
         render: (row) => (row.activa ? t("common.active") : t("common.inactive"))
+      },
+      {
+        key: "fechaGeneracion",
+        header: t("alerts.table.created"),
+        render: (row) => formatDateTime(row.fechaGeneracion)
       },
       { key: "actions", header: t("alerts.table.actions"), render: renderActions }
     ],
@@ -109,12 +156,34 @@ export default function AlertasPage() {
       <div className="page-header">
         <h1 className="page-title">{t("alerts.title")}</h1>
       </div>
+      <div className="filters">
+        <select
+          className="select"
+          value={statusFilter}
+          onChange={(event) => setStatusFilter(event.target.value)}
+        >
+          <option value="">{t("alerts.filterStatus")}</option>
+          <option value="active">{t("common.active")}</option>
+          <option value="inactive">{t("common.inactive")}</option>
+        </select>
+        <select
+          className="select"
+          value={severityFilter}
+          onChange={(event) => setSeverityFilter(event.target.value)}
+        >
+          <option value="">{t("alerts.filterSeverity")}</option>
+          <option value="BAJA">{t("severity.baja")}</option>
+          <option value="MEDIA">{t("severity.media")}</option>
+          <option value="ALTA">{t("severity.alta")}</option>
+        </select>
+      </div>
+      {saveError ? <div className="notice notice-error">{saveError}</div> : null}
       {loading ? (
         <p className="muted">{t("common.loading")}</p>
       ) : error ? (
         <p className="muted">{error}</p>
       ) : (
-        <DataTable columns={columns} rows={items} />
+        <DataTable columns={columns} rows={filteredItems} emptyMessage={t("alerts.empty")} />
       )}
     </div>
   );

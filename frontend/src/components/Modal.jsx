@@ -54,7 +54,7 @@ export default function Modal({
             {t("common.close")}
           </button>
         </div>
-        <div>{children}</div>
+        <div className="modal-body">{children}</div>
         {onSubmit ? (
           <div className="modal-actions">
             <button className="btn btn-outline" type="button" onClick={onClose}>

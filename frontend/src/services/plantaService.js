@@ -32,6 +32,32 @@ export async function getById(id) {
 }
 
 /**
+ * Fetches plants that need irrigation.
+ *
+ * @param {string} [fecha] optional date ISO (YYYY-MM-DD)
+ * @returns {Promise<Array>} plants
+ */
+export async function getNeedsIrrigation(fecha) {
+  const response = await apiClient.get(`${BASE_PATH}/necesitan-riego`, {
+    params: fecha ? { fecha } : undefined
+  });
+  return response.data;
+}
+
+/**
+ * Fetches plants that need fertilization.
+ *
+ * @param {string} [fecha] optional date ISO (YYYY-MM-DD)
+ * @returns {Promise<Array>} plants
+ */
+export async function getNeedsFertilization(fecha) {
+  const response = await apiClient.get(`${BASE_PATH}/necesitan-fertilizacion`, {
+    params: fecha ? { fecha } : undefined
+  });
+  return response.data;
+}
+
+/**
  * Creates a plant.
  *
  * @param {Object} payload plant payload
@@ -64,4 +90,12 @@ export async function remove(id) {
   await apiClient.delete(`${BASE_PATH}/${id}`);
 }
 
-export const plantaService = { getAll, getById, create, update, delete: remove };
+export const plantaService = {
+  getAll,
+  getById,
+  getNeedsIrrigation,
+  getNeedsFertilization,
+  create,
+  update,
+  delete: remove
+};

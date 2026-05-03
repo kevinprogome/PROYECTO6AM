@@ -38,7 +38,10 @@
     "inactive": "Inactive",
     "confirmDelete": "Confirm deletion?",
     "errorLoad": "Could not load data.",
-    "notAvailable": "Not available"
+    "saveError": "Could not save the information.",
+    "requiredFields": "Please complete the required fields.",
+    "notAvailable": "Not available",
+    "selectOption": "Select an option"
   },
   "table": {
     "noData": "No data",
@@ -57,9 +60,19 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "overview": "Operational overview",
     "totalPlants": "Total plants",
     "activeAlerts": "Active alerts",
-    "upcomingIrrigation": "Upcoming irrigations",
+    "needsIrrigation": "Need irrigation",
+    "needsFertilization": "Need fertilization",
+    "criticalPlants": "Critical plants",
+    "allGreenhouses": "All greenhouses",
+    "activeGreenhouse": "Active greenhouse",
+    "weeklyActivity": "Weekly activity",
+    "attentionList": "Plants needing attention",
+    "attentionHint": "Irrigation or fertilization due",
+    "noAttention": "No pending plants.",
+    "noActivity": "No recent records.",
     "irrigationTrend": "Irrigation trend",
     "fertilizationTrend": "Fertilization trend",
     "chart": {
@@ -75,12 +88,25 @@
     "title": "Greenhouses",
     "create": "Create greenhouse",
     "edit": "Edit greenhouse",
+    "empty": "No greenhouses registered.",
+    "validation": {
+      "ownerRequired": "Select the owner user.",
+      "nameRequired": "Enter the greenhouse name.",
+      "locationRequired": "Enter the greenhouse location."
+    },
     "form": {
       "ownerId": "User ID",
+      "ownerLabel": "Owner",
+      "ownerHint": "Uses the authenticated user.",
+      "ownerFallback": "Current user",
       "name": "Name",
       "location": "Location",
       "description": "Description",
-      "area": "Area (m2)"
+      "area": "Area (m2)",
+      "nameHint": "Example: North greenhouse",
+      "locationHint": "Example: Lot 2 - Central field",
+      "areaHint": "Square meters, numbers only",
+      "descriptionHint": "Operational notes or main crops"
     },
     "table": {
       "ownerId": "User",
@@ -94,13 +120,44 @@
     "title": "Plants",
     "create": "Create plant",
     "edit": "Edit plant",
+    "search": "Search by name or variety",
+    "empty": "No plants registered.",
+    "noGreenhouses": "Create a greenhouse before registering plants.",
     "filterStatus": "Status",
-    "filterGreenhouse": "Greenhouse ID",
+    "filterGreenhouse": "Greenhouse",
     "registerIrrigation": "Register irrigation",
     "registerFertilization": "Register fertilization",
     "promptFertilizerType": "Fertilizer type",
+    "sections": {
+      "basic": "Main details",
+      "schedule": "Irrigation and fertilization plan",
+      "status": "Status and availability",
+      "notes": "Notes"
+    },
+    "validation": {
+      "greenhouseRequired": "Select the greenhouse.",
+      "nameRequired": "Enter the common name.",
+      "irrigationFreqRequired": "Define the irrigation frequency.",
+      "fertilizationFreqRequired": "Define the fertilization frequency.",
+      "actionDateRequired": "Select date and time.",
+      "fertilizerRequired": "Enter the fertilizer type."
+    },
+    "actions": {
+      "irrigationTitle": "Register irrigation - {{name}}",
+      "fertilizationTitle": "Register fertilization - {{name}}",
+      "irrigationSubmit": "Save irrigation",
+      "fertilizationSubmit": "Save fertilization",
+      "actionDate": "Date and time",
+      "volume": "Volume (L)",
+      "method": "Method",
+      "responsable": "Operator",
+      "notes": "Notes",
+      "fertilizerType": "Fertilizer type",
+      "dose": "Dose",
+      "unit": "Unit"
+    },
     "form": {
-      "greenhouseId": "Greenhouse ID",
+      "greenhouseId": "Greenhouse",
       "commonName": "Common name",
       "scientificName": "Scientific name",
       "variety": "Variety",
@@ -111,7 +168,19 @@
       "fertilizationFreq": "Fertilization frequency (days)",
       "status": "Status",
       "notes": "Notes",
-      "active": "Active"
+      "active": "Active",
+      "greenhouseHint": "Select the greenhouse where it grows.",
+      "commonNameHint": "Example: Cherry tomato",
+      "scientificNameHint": "Example: Solanum lycopersicum",
+      "varietyHint": "Example: Santa Clara",
+      "sowDateHint": "Sowing or transplant date.",
+      "lastIrrigationHint": "Last irrigation recorded.",
+      "irrigationFreqHint": "How many days between irrigations.",
+      "lastFertilizationHint": "Last fertilization recorded.",
+      "fertilizationFreqHint": "How many days between fertilizations.",
+      "statusHint": "Current crop status.",
+      "activeHint": "Mark inactive if no longer producing.",
+      "notesHint": "Operator observations."
     },
     "table": {
       "commonName": "Common name",
@@ -125,11 +194,21 @@
   "alerts": {
     "title": "Alerts",
     "resolve": "Resolve",
+    "filterStatus": "Status",
+    "filterSeverity": "Severity",
+    "empty": "No alerts to show.",
+    "types": {
+      "RIEGO": "Irrigation",
+      "FERTILIZACION": "Fertilization",
+      "ESTADO": "Status",
+      "GENERAL": "General"
+    },
     "table": {
       "type": "Type",
       "severity": "Severity",
       "message": "Message",
       "status": "Status",
+      "created": "Created",
       "actions": "Actions"
     }
   },
@@ -137,6 +216,9 @@
     "title": "Reports",
     "irrigationHistory": "Irrigation history",
     "fertilizationHistory": "Fertilization history",
+    "plant": "Plant",
+    "emptyIrrigation": "No irrigation records.",
+    "emptyFertilization": "No fertilization records.",
     "irrigation": {
       "date": "Date",
       "volume": "Volume",
@@ -160,5 +242,17 @@
     "baja": "Low",
     "media": "Medium",
     "alta": "High"
+  },
+  "alerta": {
+    "riego": {
+      "pendiente": "The plant needs irrigation."
+    },
+    "fertilizacion": {
+      "pendiente": "The plant needs fertilization."
+    },
+    "estado": {
+      "critico": "Crop status is critical.",
+      "vigilancia": "Crop status requires monitoring."
+    }
   }
 }

@@ -9,6 +9,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import DataTable from "../components/DataTable.jsx";
+import { plantaService } from "../services/plantaService.js";
 import { registroFertilizacionService } from "../services/registroFertilizacionService.js";
 import { registroRiegoService } from "../services/registroRiegoService.js";
 
@@ -21,8 +22,12 @@ export default function ReportesPage() {
   const { t } = useTranslation();
   const [riegoItems, setRiegoItems] = useState([]);
   const [fertItems, setFertItems] = useState([]);
+  const [plants, setPlants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const formatDateTime = (value) =>
+    value ? new Date(value).toLocaleString() : t("common.notAvailable");
 
   /**
    * Loads reports data.
@@ -30,12 +35,14 @@ export default function ReportesPage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [riegoData, fertData] = await Promise.all([
+      const [riegoData, fertData, plantData] = await Promise.all([
         registroRiegoService.getAll(),
-        registroFertilizacionService.getAll()
+        registroFertilizacionService.getAll(),
+        plantaService.getAll()
       ]);
       setRiegoItems(riegoData || []);
       setFertItems(fertData || []);
+      setPlants(plantData || []);
       setError("");
     } catch (loadError) {
       setError(t("common.errorLoad"));
@@ -48,9 +55,32 @@ export default function ReportesPage() {
     fetchData();
   }, [fetchData]);
 
+  const plantMap = useMemo(() => {
+    return new Map(plants.map((plant) => [plant.id, plant]));
+  }, [plants]);
+
+  const riegoRows = useMemo(() => {
+    return riegoItems.map((item) => ({
+      ...item,
+      plantaNombre: plantMap.get(item.plantaId)?.nombreComun || item.plantaId
+    }));
+  }, [riegoItems, plantMap]);
+
+  const fertRows = useMemo(() => {
+    return fertItems.map((item) => ({
+      ...item,
+      plantaNombre: plantMap.get(item.plantaId)?.nombreComun || item.plantaId
+    }));
+  }, [fertItems, plantMap]);
+
   const riegoColumns = useMemo(
     () => [
-      { key: "fechaRiego", header: t("reports.irrigation.date") },
+      { key: "plantaNombre", header: t("reports.plant") },
+      {
+        key: "fechaRiego",
+        header: t("reports.irrigation.date"),
+        render: (row) => formatDateTime(row.fechaRiego)
+      },
       { key: "volumenLitros", header: t("reports.irrigation.volume") },
       { key: "metodo", header: t("reports.irrigation.method") },
       { key: "responsable", header: t("reports.irrigation.operator") }
@@ -60,7 +90,12 @@ export default function ReportesPage() {
 
   const fertilizacionColumns = useMemo(
     () => [
-      { key: "fechaFertilizacion", header: t("reports.fertilization.date") },
+      { key: "plantaNombre", header: t("reports.plant") },
+      {
+        key: "fechaFertilizacion",
+        header: t("reports.fertilization.date"),
+        render: (row) => formatDateTime(row.fechaFertilizacion)
+      },
       { key: "tipoFertilizante", header: t("reports.fertilization.type") },
       { key: "dosis", header: t("reports.fertilization.dose") },
       { key: "unidad", header: t("reports.fertilization.unit") },
@@ -82,11 +117,19 @@ export default function ReportesPage() {
         <div className="grid" style={{ gap: 24 }}>
           <div>
             <h3>{t("reports.irrigationHistory")}</h3>
-            <DataTable columns={riegoColumns} rows={riegoItems} />
+            <DataTable
+              columns={riegoColumns}
+              rows={riegoRows}
+              emptyMessage={t("reports.emptyIrrigation")}
+            />
           </div>
           <div>
             <h3>{t("reports.fertilizationHistory")}</h3>
-            <DataTable columns={fertilizacionColumns} rows={fertItems} />
+            <DataTable
+              columns={fertilizacionColumns}
+              rows={fertRows}
+              emptyMessage={t("reports.emptyFertilization")}
+            />
           </div>
         </div>
       )}
