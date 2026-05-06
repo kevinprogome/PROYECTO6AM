@@ -10,11 +10,13 @@ package com.greenhouse.manager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Entry point for the GreenHouse Manager backend application.
  */
 @SpringBootApplication
+@EnableScheduling
 public class GreenHouseManagerApplication {
 
     /**

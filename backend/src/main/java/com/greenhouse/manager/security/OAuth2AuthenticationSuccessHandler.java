@@ -17,18 +17,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.context.i18n.LocaleContextHolder; // ✅ CORRECTO
+import org.springframework.web.util.UriComponentsBuilder;
 /**
  * Authentication success handler that returns a JWT token.
  */
@@ -39,6 +38,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     private final UsuarioRepository usuarioRepository;
     private final MessageSource messageSource;
     private final ObjectMapper objectMapper;
+    private final String redirectUri;
 
     /**
      * Creates a new OAuth2AuthenticationSuccessHandler.
@@ -52,12 +52,14 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         JwtService jwtService,
         UsuarioRepository usuarioRepository,
         MessageSource messageSource,
-        ObjectMapper objectMapper
+        ObjectMapper objectMapper,
+        @Value("${app.frontend.redirect-uri:http://localhost:5173/login}") String redirectUri
     ) {
         this.jwtService = jwtService;
         this.usuarioRepository = usuarioRepository;
         this.messageSource = messageSource;
         this.objectMapper = objectMapper;
+        this.redirectUri = redirectUri;
     }
 
     /**
@@ -90,16 +92,15 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         }
 
         String token = jwtService.generateToken(usuario);
-        Map<String, Object> body = new HashMap<>();
-        body.put("token", token);
-        body.put("tokenType", "Bearer");
-        body.put("email", usuario.getEmail());
-        body.put("rol", usuario.getRol().name());
+        String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
+            .queryParam("token", token)
+            .queryParam("userId", usuario.getId())
+            .queryParam("email", usuario.getEmail())
+            .queryParam("role", usuario.getRol().name())
+            .build(true)
+            .toUriString();
 
-        response.setStatus(HttpStatus.OK.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
-        objectMapper.writeValue(response.getOutputStream(), body);
+        response.sendRedirect(targetUrl);
     }
 
     private void writeError(HttpServletResponse response, HttpStatus status, String messageKey, String path)

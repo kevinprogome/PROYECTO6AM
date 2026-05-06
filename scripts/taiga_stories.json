@@ -1,0 +1,74 @@
+{
+  "stories": [
+    {
+      "subject": "Pruebas backend JUnit",
+      "description": "Cobertura unitaria de servicios y controladores.",
+      "tags": ["automation", "backend", "tests"],
+      "acceptance": [
+        "Tests para servicios de plantas e invernaderos",
+        "Tests MVC para controladores principales",
+        "Ejecucion estable con perfil test"
+      ]
+    },
+    {
+      "subject": "Pruebas API con pytest",
+      "description": "Flujos API con autenticacion de prueba.",
+      "tags": ["automation", "api", "pytest"],
+      "acceptance": [
+        "Fixtures para token y datos de prueba",
+        "Casos para plantas, alertas y scheduler",
+        "Reporte HTML y configuracion pytest"
+      ]
+    },
+    {
+      "subject": "Pruebas UI con Selenium",
+      "description": "Page objects y pruebas de flujos criticos UI.",
+      "tags": ["automation", "ui", "selenium"],
+      "acceptance": [
+        "Page objects para login, plantas y alertas",
+        "Pruebas de login y CRUD basico",
+        "Ejecucion local con frontend y backend activos"
+      ]
+    },
+    {
+      "subject": "CI con GitHub Actions",
+      "description": "Pipelines para backend, frontend y pruebas API.",
+      "tags": ["ci", "github-actions"],
+      "acceptance": [
+        "Workflow de backend (mvn test)",
+        "Workflow de frontend (vitest)",
+        "Workflow de API tests (pytest)"
+      ]
+    },
+    {
+      "subject": "Stack local con Docker y Makefile",
+      "description": "Ejecucion local con Docker Compose y comandos utiles.",
+      "tags": ["docker", "devx"],
+      "acceptance": [
+        "docker-compose para db, backend y frontend",
+        "Makefile con targets comunes",
+        "Variables de entorno documentadas"
+      ]
+    },
+    {
+      "subject": "Documentacion de automatizacion",
+      "description": "Guias para pruebas y arquitectura.",
+      "tags": ["docs"],
+      "acceptance": [
+        "AUTOMATION.md actualizado",
+        "ARCHITECTURE.md con overview",
+        "README.md con pasos principales"
+      ]
+    },
+    {
+      "subject": "Integracion Taiga",
+      "description": "Scripts para sync, validacion y reportes Taiga.",
+      "tags": ["taiga", "automation"],
+      "acceptance": [
+        "Script de sync de historias",
+        "Script de validacion",
+        "Script de reporte en Markdown"
+      ]
+    }
+  ]
+}

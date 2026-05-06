@@ -37,9 +37,9 @@ public interface PlantaRepository extends JpaRepository<Planta, Long> {
      * @return list of plants due for irrigation
      */
     @Query(value = "SELECT * FROM plantas p "
-        + "WHERE p.activo = true "
-        + "AND p.fecha_ultimo_riego IS NOT NULL "
-        + "AND (p.fecha_ultimo_riego + (p.frecuencia_riego_dias || ' days')::interval) <= :fechaActual",
+        + "WHERE p.activo = 1 "
+        + "AND (p.fecha_ultimo_riego IS NULL "
+        + "OR DATE_ADD(p.fecha_ultimo_riego, INTERVAL p.frecuencia_riego_dias DAY) <= :fechaActual)",
         nativeQuery = true)
     List<Planta> findPlantasQueNecesitanRiego(@Param("fechaActual") LocalDate fechaActual);
 }

@@ -1,0 +1,51 @@
+# Proyecto: GreenHouse Manager
+# Archivo: application-test.yml
+# Descripcion: Configuracion de pruebas para tests automatizados.
+# Autor: Equipo GreenHouse Manager
+# Fecha: 2026-05-06
+# Version: 1.0.0
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:greenhouse_test;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: false
+    show-sql: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test-client-id
+            client-secret: test-client-secret
+            scope:
+              - email
+              - profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+  mail:
+    host: localhost
+    port: 1025
+    username: test
+    password: test
+
+security:
+  jwt:
+    secret: test-secret-change-me-32-characters-min
+    expiration-minutes: 60
+
+app:
+  frontend:
+    redirect-uri: http://localhost:5173/login
+  cors:
+    allowed-origins: http://localhost:5173
+
+server:
+  port: 8080

@@ -86,7 +86,7 @@ public class InvernaderoController {
      */
     @Operation(summary = "Create greenhouse")
     @ApiResponse(responseCode = "201", description = "Created")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','OPERADOR')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public InvernaderoResponse createInvernadero(@Valid @RequestBody InvernaderoRequest request) {
@@ -103,7 +103,7 @@ public class InvernaderoController {
     @Operation(summary = "Update greenhouse")
     @ApiResponse(responseCode = "200", description = "Ok")
     @ApiResponse(responseCode = "404", description = "Not found")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','OPERADOR')")
     @PutMapping("/{id}")
     public InvernaderoResponse updateInvernadero(
         @PathVariable Long id,

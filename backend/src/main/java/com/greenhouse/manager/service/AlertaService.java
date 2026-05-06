@@ -15,17 +15,12 @@ import com.greenhouse.manager.domain.entity.Alerta;
 import com.greenhouse.manager.domain.entity.Invernadero;
 import com.greenhouse.manager.domain.entity.Planta;
 import com.greenhouse.manager.domain.entity.Usuario;
-import com.greenhouse.manager.domain.enums.AlertaSeveridad;
-import com.greenhouse.manager.domain.enums.AlertaTipo;
 import com.greenhouse.manager.domain.repository.AlertaRepository;
 import com.greenhouse.manager.domain.repository.InvernaderoRepository;
 import com.greenhouse.manager.domain.repository.PlantaRepository;
 import com.greenhouse.manager.domain.repository.UsuarioRepository;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -138,38 +133,6 @@ public class AlertaService {
         alertaRepository.delete(alerta);
     }
 
-    /**
-     * Generates daily irrigation alerts at 8 AM.
-     */
-    @Scheduled(cron = "0 0 8 * * *")
-    @Transactional
-    public void generarAlertasAutomaticas() {
-        LocalDate hoy = LocalDate.now();
-        LocalDateTime ahora = LocalDateTime.now();
-
-        for (Planta planta : plantaRepository.findAll()) {
-            if (!Boolean.TRUE.equals(planta.getActivo())) {
-                continue;
-            }
-            if (!necesitaRiego(planta, hoy)) {
-                continue;
-            }
-            if (tieneAlertaActiva(planta, AlertaTipo.RIEGO)) {
-                continue;
-            }
-
-            Alerta alerta = new Alerta();
-            alerta.setPlanta(planta);
-            alerta.setInvernadero(planta.getInvernadero());
-            alerta.setTipo(AlertaTipo.RIEGO);
-            alerta.setSeveridad(AlertaSeveridad.MEDIA);
-            alerta.setMensaje("alerta.riego.pendiente");
-            alerta.setActiva(true);
-            alerta.setFechaGeneracion(ahora);
-            alertaRepository.save(alerta);
-        }
-    }
-
     private Alerta getAlertaEntity(Long id) {
         return alertaRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("error.alerta.no_encontrada"));
@@ -226,23 +189,5 @@ public class AlertaService {
             response.setResueltaPorUsuarioId(alerta.getResueltaPorUsuario().getId());
         }
         return response;
-    }
-
-    private boolean necesitaRiego(Planta planta, LocalDate fechaActual) {
-        if (planta.getFechaUltimoRiego() == null) {
-            return true;
-        }
-        LocalDate proximoRiego = planta.getFechaUltimoRiego()
-            .plusDays(planta.getFrecuenciaRiegoDias());
-        return !proximoRiego.isAfter(fechaActual);
-    }
-
-    private boolean tieneAlertaActiva(Planta planta, AlertaTipo tipo) {
-        if (planta.getAlertas() == null) {
-            return false;
-        }
-        return planta.getAlertas()
-            .stream()
-            .anyMatch(alerta -> Boolean.TRUE.equals(alerta.getActiva()) && alerta.getTipo() == tipo);
     }
 }
