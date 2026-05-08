@@ -6,6 +6,8 @@
 # Version: 1.0.0
 
 spring:
+  config:
+    import: optional:file:.env[.properties],optional:file:./PROYECTO6AM/.env[.properties],optional:file:../.env[.properties]
   datasource:
     url: jdbc:h2:mem:greenhouse_test;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
